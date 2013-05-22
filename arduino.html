@@ -1,0 +1,35 @@
+<script src="http://173.248.130.120:8000/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>
+//Open a browser and go to http://localhost:8000, you'll see a title to see the page loaded
+//For an 'automatic' update, like something that executes after a database update, open http://localhost/arduino-socketio-test.php (port 80) C:\inetpub\wwwroot\arduino-socketio.php
+//This page, localhost:8000, will update with the random number generated in PHP
+
+
+//http://psitsmike.com/2011/09/node-js-and-socket-io-chat-tutorial/
+
+
+	var socket = io.connect('http://173.248.130.120:8000');
+
+	// on connection to server, ask for user's name with an anonymous callback
+	socket.on('connect', function(){
+		// call the server-side function 'adduser' and send one parameter (value of prompt)
+		socket.emit('adduser', prompt("What's your name?"));
+		console.log('Hello!');
+	});
+
+	// listener, whenever the server emits 'updatechat', this updates the chat body
+	socket.on('arduinoUpdate', function (rfid_serial, result) {
+		if(result == 0){
+			window.open('https://www.facebook.com/dialog/oauth?client_id=329588640467656&redirect_uri=http://173.248.130.120/&scope=publish_stream&state=' + rfid_serial, '_facebook', 'toolbar=no,titlebar=no');
+		}else if(result == 1){
+			alert('Good to go!');
+		}
+		$('#content').append('<b>RFID</b>: ' + rfid_serial + ' ' + result + '<br />');
+	});
+
+</script>
+
+<div id="content">
+	<h1>Value of scanned RFID card with an action</h1>
+</div>
